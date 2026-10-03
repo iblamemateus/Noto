@@ -1,14 +1,32 @@
 <p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Notes" %>
 
-<h1>Notes</h1>
+<% if @pinned_notes.any? %>
+  <h1> Notas Fixadas: </h1>
+  <% @pinned_notes.each do |pinned_note| %>
+    <%= render pinned_note %>
+    <p>
+      <%=button_to(
+        "Desfixar essa nota",
+        toggle_pin_note_path(pinned_note),
+        method: :patch) %>
+      <%= link_to("Mostrar essa nota", pinned_note) %>
+    </p>
+  <% end %> 
+<% end %>
+
+<h2>Outras Notas</h2>
 
 <div id="notes">
   <% @notes.each do |note| %>
     <%= render note %>
     <p>
-      <%= link_to "Show this note", note %>
+      <%= button_to(
+        "Fixar essa nota",
+        toggle_pin_note_path(note),
+        method: :patch
+      ) %>
+      <%= link_to("Mostrar essa nota", note) %>
     </p>
   <% end %>
 </div>
