@@ -1,34 +1,76 @@
+<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 <p style="color: green"><%= notice %></p>
 <% content_for :title, "Notes" %>
 
-<% if @pinned_notes.any? %>
-  <h1> Notas Fixadas: </h1>
-  <% @pinned_notes.each do |pinned_note| %>
-    <%= render pinned_note %>
-    <p>
-      <%=button_to(
-        "Desfixar essa nota",
-        toggle_pin_note_path(pinned_note),
-        method: :patch) %>
-      <%= link_to("Mostrar essa nota", pinned_note) %>
-    </p>
-  <% end %> 
-<% end %>
-
-<h2>Outras Notas</h2>
-
-<div id="notes">
-  <% @notes.each do |note| %>
-    <%= render note %>
-    <p>
-      <%= button_to(
-        "Fixar essa nota",
-        toggle_pin_note_path(note),
-        method: :patch
-      ) %>
-      <%= link_to("Mostrar essa nota", note) %>
-    </p>
+<script>
+  document.addEventListener("turbo:load", function() {
+    const images = [
+      "<%= asset_path('background-image.jpg') %>",
+      "<%= asset_path('background-image2.jpg') %>",
+      "<%= asset_path('background-image3.jpg') %>"
+    ];
+    let currentIndex = 0;
+    function changeBackground() {
+      currentIndex = (currentIndex + 1) % images.length;
+      document.body.style.backgroundImage = `url('${images[currentIndex]}')`;
+    }
+    setInterval(changeBackground, 40000);
+  });
+</script>
+<div class="main-app-container">
+  <div class="fixed-text">
+    <span class="section-badge">Nõto</span>
+  </div>
+  <div class="random-phrase-container">
+    <p class="random-phrase-text">"<%= @randomic_phrase.text %>"</p>
+    <span class="random-phrase-author">— <%= @randomic_phrase.author %></span>
+  </div>
+  <%= form_with url: notes_path, method: :get, local: true, class: "search-form" do |form| %>
+    <div class="search-field-group">
+      <%= form.text_field(:search, 
+                          value: params[:search], 
+                          placeholder: "Pesquisar notas...",
+                          class: "search-input") %>
+      
+      <%= form.submit "Buscar", class: "search-button" %>
+      <% if params[:search].present? %>
+        <%= link_to "Limpar", notes_path, class: "clear-search-button" %>
+      <% end %>
+    </div>
   <% end %>
-</div>
-
-<%= link_to "New note", new_note_path %>
+  <div style="margin-top: 40px; text-align: center; margin-bottom: 40px;">
+    <%= link_to "+ Criar uma nova nota", new_note_path, class: "link-btn" %>
+  </div>
+  <% if @pinned_notes.empty? && @notes.empty? %>
+    <div class="no-search-note"><h2>Nenhuma nota foi encontrada</h2></div>
+  <% else %>
+    <% if @pinned_notes.any? %>
+      <h2>Notas Fixadas</h2>
+      <div class="pinned-notes">
+        <% @pinned_notes.each do |pinned_note| %>
+          <div class="note-card pinned-note-card">
+            <%= render pinned_note %>
+            
+            <div class="note-card-actions">
+              <%= button_to("Desfixar", toggle_pin_note_path(pinned_note), method: :patch) %>
+              <%= link_to "Ver", pinned_note %>
+            </div>
+          </div>
+        <% end %> 
+      </div>
+    <% end %>
+    <div class="subtle-divider"></div>
+    <h2>Outras Notas</h2>
+    <div id="notes">
+      <% @notes.each do |note| %>
+        <div class="note-card">
+          <%= render note %>
+          <div class="note-card-actions">
+            <%= button_to("Fixar nota", toggle_pin_note_path(note), method: :patch) %>
+            <%= link_to("Ver", note) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div> 

@@ -1,10 +1,21 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Detalhes da nota" %>
 
-<%= render @note %>
+<p style="color: green; text-align: center;"><%= notice %></p>
 
-<div>
-  <%= link_to "Edit this note", edit_note_path(@note) %> |
-  <%= link_to "Back to notes", notes_path %>
+<div class="note-show-container">
+  <div class="note-show-card">
+    <h1 class="title-note"><%= @note.title %></h1>
+    <p class="note-content"><%= @note.content %></p>
 
-  <%= button_to "Destroy this note", @note, method: :delete %>
+    <div class="note-show-actions">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 16px;">
+        <%= link_to "Editar", edit_note_path(@note), class: "link-btn" %>
+        <%= link_to "Voltar", notes_path, class: "form-back-link" %>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <%= button_to "Excluir nota", @note, method: :delete, data: { turbo_confirm: "você possuí toda a certeza disso?" }, class: "destructive-btn" %>
+      </div>
+    </div>
+  </div>
 </div>

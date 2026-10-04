@@ -1,27 +1,36 @@
-<%= form_with(model: note) do |form| %>
-  <% if note.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(note.errors.count, "error") %> prohibited this note from being saved:</h2>
+<div class="form-container">
+  <div class="form-card">
+    <%= form_with(model: note) do |form| %>
+      <% if note.errors.any? %>
+        <div class="form-errors">
+          <h2>Calma! Algo deu errado :(</h2>
+          <ul>
+            <% note.errors.each do |error| %>
+              <li><%= error.message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-      <ul>
-        <% note.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+      <div class="form-group">
+        <%= form.label :title, "Título", class: "form-label" %>
+        <%= form.text_field :title, class: "form-input", placeholder: "Dê um título para sua nota..." %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :content, "Conteúdo", class: "form-label" %>
+        <%= form.text_area :content, class: "form-textarea", placeholder: "Escreva seus pensamentos aqui...", rows: 6 %>
+      </div>
+      <div class="form-group">
+        <%= form.label :status, "Status / Prioridade", class: "form-label" %>
+        <%= form.select :status,Note::STATUS, {},
+                        class: "form-input" %>
     </div>
-  <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+      <div class="form-actions">
+        <%= form.submit "Salvar Nota", class: "link-btn form-submit-btn" %>
+        <%= link_to "Voltar", notes_path, class: "form-back-link" %>
+      </div>
+    <% end %>
   </div>
-
-  <div>
-    <%= form.label :content, style: "display: block" %>
-    <%= form.textarea :content %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>

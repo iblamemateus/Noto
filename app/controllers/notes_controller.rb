@@ -1,8 +1,11 @@
 class NotesController < ApplicationController
-  before_action :set_note, only: %i[ show edit update destroy ]
+  before_action :set_note, only: %i[ show edit update destroy toggle_pin]
   def index
-    @notes = Note.where(pinned: false).order(created_at: :desc)
-    @pinned_notes = Note.where(pinned: true).order(created_at: :desc)
+    base_note = Note.search_by_text(params[:search])
+
+    @notes = base_note.not_pinned_notes
+    @pinned_notes = base_note.pinned_notes
+    @randomic_phrase = Phrase.new
   end
 
   def show; end
@@ -15,10 +18,9 @@ class NotesController < ApplicationController
 
   def create
     @note = Note.new(note_params)
-
     respond_to do |format|
       if @note.save
-        format.html { redirect_to @note, notice: "Note was successfully created." }
+        format.html { redirect_to @note }
         format.json { render :show, status: :created, location: @note }
       else
         format.html { render :new, status: :unprocessable_content }
@@ -43,23 +45,20 @@ class NotesController < ApplicationController
     @note.destroy!
 
     respond_to do |format|
-      format.html { redirect_to notes_path, notice: "Note was successfully destroyed.", status: :see_other }
+      format.html { redirect_to(notes_path) }
       format.json { head :no_content }
     end
   end
   def toggle_pin
-    @note = Note.find(params[:id])
     @note.update(pinned: !@note.pinned)
-
-    redirect_to notes_path
+    redirect_to(notes_path)
   end 
-
   private
     def set_note
       @note = Note.find(params.expect(:id))
     end
 
     def note_params
-      params.expect(note: [ :title, :content ])
+      params.expect(note: [ :title, :content, :status ])
     end
 end

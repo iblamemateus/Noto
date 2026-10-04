@@ -1,12 +1,13 @@
-<div id="<%= dom_id note %>">
-  <div>
-    <strong>Title:</strong>
-    <%= note.title %>
-  </div>
-
-  <div>
-    <strong>Content:</strong>
-    <%= note.content %>
-  </div>
-
+<div id="<%= dom_id note %>" class="note-body-wrapper">
+  <% if note.status.present? %>
+    <div class="note-badge-wrapper">
+      <% if note.status == "important" %>
+        <span class="status-pill status-important">Importante</span>
+      <% elsif note.status == "dont_forget" %>
+        <span class="status-pill status-remember">Não esquecer</span>
+      <% end %>
+    </div>
+  <% end %>
+  <h3 class="title-note"><%= note.title %></h3>
+  <p class="note-content"><%= truncate(note.content, length: 140) %></p>
 </div>
