@@ -10,10 +10,10 @@ I relied heavily on AI assistance to build the front-end, as that wasn't the mai
 
 This project was developed using the following technologies:
 
-* **Ruby** — my favorite language
+* **Ruby** — My favorite language
 * **Ruby on Rails** — A fucking awesome framework
-* **Active Record** — Object-relational mapping (ORM) for database management.
-* **SQLite** —  self-contained relational database.
+* **Active Record** — Object-relational mapping (ORM) for database management
+* **SQLite** —  self-contained relational database
 
 ---
 
